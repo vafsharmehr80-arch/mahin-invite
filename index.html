@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دعوت به همایش تحصیلی دانش‌آموزان</title>
+<meta property="og:title" content="دعوت به همایش تحصیلی دانش‌آموزان">
+<meta property="og:image" content="invitation.jpg">
+<style>
+  :root {
+    --bg1: #efe9fb;
+    --bg2: #d9cdf3;
+    --ink: #2a1f5c;
+    --accent: #6b4fc4;
+    --accent-dark: #4d36a0;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 16px;
+    background: linear-gradient(160deg, var(--bg1), var(--bg2));
+    color: var(--ink);
+    font-family: Tahoma, "Segoe UI", system-ui, sans-serif;
+  }
+  .card {
+    width: min(100%, 760px);
+    border-radius: 18px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(77, 54, 160, .25);
+  }
+  .card img { display: block; width: 100%; height: auto; }
+  .player { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  button#play {
+    appearance: none; border: 0; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 28px;
+    border-radius: 999px;
+    font: inherit; font-size: 1.05rem; font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    box-shadow: 0 6px 16px rgba(77, 54, 160, .35);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  button#play:active { transform: scale(.97); box-shadow: 0 3px 8px rgba(77, 54, 160, .35); }
+  button#play:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  button#play svg { width: 22px; height: 22px; fill: currentColor; }
+  .hint { font-size: .85rem; opacity: .75; margin: 0; }
+  .pulse { animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 6px 16px rgba(77,54,160,.35), 0 0 0 0 rgba(107,79,196,.45); }
+    50%      { box-shadow: 0 6px 16px rgba(77,54,160,.35), 0 0 0 14px rgba(107,79,196,0); }
+  }
+  @media (prefers-reduced-motion: reduce) { .pulse { animation: none; } }
+</style>
+</head>
+<body>
+  <main class="card">
+    <img src="invitation.jpg" width="1080" height="730"
+         alt="دعوت‌نامه همایش تحصیلی دانش‌آموزان — تاریخ ۱۴۰۵/۸/۷، ساعت ۴ بعد از ظهر، دبیرستان مهین دخت">
+  </main>
+
+  <div class="player">
+    <button id="play" class="pulse" type="button" aria-pressed="false">
+      <svg id="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <span id="label">پخش آهنگ</span>
+    </button>
+    <p class="hint" id="hint">برای شنیدن آهنگ، دکمه را لمس کنید</p>
+  </div>
+
+  <audio id="song" src="music.mp3" loop preload="auto"></audio>
+
+<script>
+(function () {
+  var audio = document.getElementById('song');
+  var btn = document.getElementById('play');
+  var label = document.getElementById('label');
+  var icon = document.getElementById('icon');
+  var hint = document.getElementById('hint');
+  var PLAY = 'M8 5v14l11-7z';
+  var PAUSE = 'M6 5h4v14H6zM14 5h4v14h-4z';
+
+  function setState(playing) {
+    btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    label.textContent = playing ? 'توقف آهنگ' : 'پخش آهنگ';
+    icon.firstElementChild.setAttribute('d', playing ? PAUSE : PLAY);
+    btn.classList.toggle('pulse', !playing);
+    hint.textContent = playing ? 'آهنگ در حال پخش است' : 'برای شنیدن آهنگ، دکمه را لمس کنید';
+  }
+
+  btn.addEventListener('click', function () {
+    if (audio.paused) {
+      var p = audio.play();
+      if (p && p.catch) {
+        p.catch(function () { hint.textContent = 'پخش انجام نشد؛ لطفاً دوباره دکمه را لمس کنید'; });
+      }
+    } else {
+      audio.pause();
+    }
+  });
+  audio.addEventListener('play', function () { setState(true); });
+  audio.addEventListener('pause', function () { setState(false); });
+  audio.addEventListener('error', function () { hint.textContent = 'بارگذاری آهنگ ممکن نشد'; });
+})();
+</script>
+</body>
+</html>
